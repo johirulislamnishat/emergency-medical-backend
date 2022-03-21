@@ -25,6 +25,7 @@ client.connect((err) => {
     .db("emergency_medical")
     .collection("doctors");
   const blogsCollection = client.db("emergency_medical").collection("blogs");
+  const labCollection = client.db("emergency_medical").collection("lab");
 
   console.log("Emergency Medical DataBase Connected");
 
@@ -106,6 +107,21 @@ client.connect((err) => {
     const result = await doctorsCollection.deleteOne(query);
     // console.log(result);
     res.send(result);
+  });
+
+  //Laboratory POST API
+  app.post("/lab", async (req, res) => {
+    const lab = req.body;
+    const result = await labCollection.insertOne(lab);
+    // console.log(result);
+    res.json(result);
+  });
+
+  //Laboratory GET API
+  app.get("/lab", async (req, res) => {
+    const cursor = labCollection.find({});
+    const lab = await cursor.toArray();
+    res.send(lab);
   });
 
   //BLOGS POST API
