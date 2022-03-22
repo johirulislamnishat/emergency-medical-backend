@@ -26,6 +26,9 @@ client.connect((err) => {
     .collection("doctors");
   const blogsCollection = client.db("emergency_medical").collection("blogs");
   const labCollection = client.db("emergency_medical").collection("lab");
+  const appointmentCollection = client
+    .db("emergency_medical")
+    .collection("appointments");
 
   console.log("Emergency Medical DataBase Connected");
 
@@ -122,6 +125,37 @@ client.connect((err) => {
     const cursor = labCollection.find({});
     const lab = await cursor.toArray();
     res.send(lab);
+  });
+
+  //DOCTORS Single Lab
+  app.get("/lab/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await labCollection.findOne(query);
+    res.send(result);
+  });
+
+  //DELETE LAB API
+  app.delete("/lab/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await labCollection.deleteOne(query);
+    // console.log(result);
+    res.send(result);
+  });
+
+  //APPOINTMENT POST API
+  app.post("/appointments", async (req, res) => {
+    const appointments = req.body;
+    const result = await appointmentCollection.insertOne(appointments);
+    res.json(result);
+  });
+
+  //APPOINTMENT GET API
+  app.get("/appointments", async (req, res) => {
+    const cursor = appointmentCollection.find({});
+    const result = await cursor.toArray();
+    res.json(result);
   });
 
   //BLOGS POST API
